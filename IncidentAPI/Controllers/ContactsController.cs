@@ -1,41 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using IncidentAPI.Data;
+using IncidentAPI.DTOs;
+using IncidentAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IncidentAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ContactsController : ControllerBase
+    public class ContactsController: ControllerBase
     {
-        // GET: api/<ContactsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly DataContext _dataContext;
+        private readonly IValidator<ContactDto> _validator;
+
+        public ContactsController(DataContext dataContext, IValidator<ContactDto> validator)
         {
-            return new string[] { "value1", "value2" };
+            _dataContext = dataContext;
+            _validator = validator;
         }
 
-        // GET api/<ContactsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ContactsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Create([FromBody] ContactDto request)
         {
-        }
+            var validationResult = await _validator.ValidateAsync(request);
 
-        // PUT api/<ContactsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(new ValidationProblemDetails(validationResult.ToDictionary()));
+            }
 
-        // DELETE api/<ContactsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            if (await _dataContext.Contacts.AnyAsync(c => c.Email == request.Email))
+            {
+                return BadRequest("Contact with provided email address already exists");
+                
+            }
+
+            var result = new Contact()
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email
+            };
+
+            await _dataContext.AddAsync(result);
+            await _dataContext.SaveChangesAsync();
+
+            return StatusCode(StatusCodes.Status201Created);
         }
     }
 }

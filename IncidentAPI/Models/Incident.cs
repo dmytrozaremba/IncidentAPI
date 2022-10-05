@@ -14,7 +14,7 @@ namespace IncidentAPI.Models
 
         public Incident()
         {
-            Name = new Guid().ToString();
+            Name = Guid.NewGuid().ToString();
         }
     }
 }

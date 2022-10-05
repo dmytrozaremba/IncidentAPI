@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using IncidentAPI.Data;
+using IncidentAPI.DTOs;
+using IncidentAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IncidentAPI.Controllers
 {
@@ -6,36 +11,48 @@ namespace IncidentAPI.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        // GET: api/<AccountsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly DataContext _dataContext;
+        private readonly IValidator<AccountDto> _validator;
+
+        public AccountsController(DataContext dataContext, IValidator<AccountDto> validator)
         {
-            return new string[] { "value1", "value2" };
+            _dataContext = dataContext;
+            _validator = validator;
         }
 
-        // GET api/<AccountsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<AccountsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Create([FromBody] AccountDto request)
         {
-        }
+            var validationResult = await _validator.ValidateAsync(request);
 
-        // PUT api/<AccountsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(new ValidationProblemDetails(validationResult.ToDictionary()));
+            }
 
-        // DELETE api/<AccountsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            if (await _dataContext.Accounts.AnyAsync(c => c.Name == request.Name))
+            {
+                return BadRequest("Account with provided name already exists");
+
+            }
+
+            var contact = await _dataContext.Contacts.FirstOrDefaultAsync(c => c.Email == request.ContactEmail);
+
+            if (contact is null)
+            {
+                return NotFound("Contact with provided email does not exist");
+            }            
+
+            var result = new Account()
+            {
+                Name = request.Name
+            };
+
+            contact.Accounts.Add(result);
+            _dataContext.Accounts.Add(result);
+            await _dataContext.SaveChangesAsync();
+
+            return StatusCode(StatusCodes.Status201Created);
         }
     }
 }

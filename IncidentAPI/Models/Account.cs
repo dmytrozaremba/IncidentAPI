@@ -11,6 +11,6 @@
         // Possibly change on incident creation
         public Contact Contact { get; set; }
 
-        public List<Incident> Incedents { get; set; }
+        public List<Incident> Incedents { get; set; } = new List<Incident> { };
     }
 }

@@ -10,6 +10,6 @@
 
         public string Email { get; set; }
 
-        public List<Account> Accounts { get; set; }
+        public List<Account> Accounts { get; set; } = new List<Account>();
     }
 }

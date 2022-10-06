@@ -44,7 +44,7 @@ namespace IncidentAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Incedents",
+                name: "Incidents",
                 columns: table => new
                 {
                     Name = table.Column<string>(type: "TEXT", nullable: false),
@@ -53,9 +53,9 @@ namespace IncidentAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Incedents", x => x.Name);
+                    table.PrimaryKey("PK_Incidents", x => x.Name);
                     table.ForeignKey(
-                        name: "FK_Incedents_Accounts_AccountId",
+                        name: "FK_Incidents_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
@@ -80,15 +80,15 @@ namespace IncidentAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incedents_AccountId",
-                table: "Incedents",
+                name: "IX_Incidents_AccountId",
+                table: "Incidents",
                 column: "AccountId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Incedents");
+                name: "Incidents");
 
             migrationBuilder.DropTable(
                 name: "Accounts");

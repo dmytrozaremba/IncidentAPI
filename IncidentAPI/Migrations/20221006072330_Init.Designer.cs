@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IncidentAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221005151216_Init")]
+    [Migration("20221006072330_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,7 +87,7 @@ namespace IncidentAPI.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Incedents");
+                    b.ToTable("Incidents");
                 });
 
             modelBuilder.Entity("IncidentAPI.Models.Account", b =>
@@ -104,7 +104,7 @@ namespace IncidentAPI.Migrations
             modelBuilder.Entity("IncidentAPI.Models.Incident", b =>
                 {
                     b.HasOne("IncidentAPI.Models.Account", "Account")
-                        .WithMany("Incedents")
+                        .WithMany("Incidents")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -114,7 +114,7 @@ namespace IncidentAPI.Migrations
 
             modelBuilder.Entity("IncidentAPI.Models.Account", b =>
                 {
-                    b.Navigation("Incedents");
+                    b.Navigation("Incidents");
                 });
 
             modelBuilder.Entity("IncidentAPI.Models.Contact", b =>

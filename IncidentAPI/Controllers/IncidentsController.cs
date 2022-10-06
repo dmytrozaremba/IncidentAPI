@@ -54,7 +54,7 @@ namespace IncidentAPI.Controllers
                 Description = request.Description
             };
 
-            account.Incedents.Add(result);
+            account.Incidents.Add(result);
             _dataContext.Add(result);
             await _dataContext.SaveChangesAsync();
 

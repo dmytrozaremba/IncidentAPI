@@ -19,7 +19,7 @@ namespace IncidentAPI.Configurations
                 .WithMany(t => t.Accounts)
                 .IsRequired();
 
-            builder.HasMany(t => t.Incedents)
+            builder.HasMany(t => t.Incidents)
                 .WithOne(t => t.Account);
         }
     }

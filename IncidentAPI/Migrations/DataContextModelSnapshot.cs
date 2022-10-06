@@ -85,7 +85,7 @@ namespace IncidentAPI.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Incedents");
+                    b.ToTable("Incidents");
                 });
 
             modelBuilder.Entity("IncidentAPI.Models.Account", b =>
@@ -102,7 +102,7 @@ namespace IncidentAPI.Migrations
             modelBuilder.Entity("IncidentAPI.Models.Incident", b =>
                 {
                     b.HasOne("IncidentAPI.Models.Account", "Account")
-                        .WithMany("Incedents")
+                        .WithMany("Incidents")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -112,7 +112,7 @@ namespace IncidentAPI.Migrations
 
             modelBuilder.Entity("IncidentAPI.Models.Account", b =>
                 {
-                    b.Navigation("Incedents");
+                    b.Navigation("Incidents");
                 });
 
             modelBuilder.Entity("IncidentAPI.Models.Contact", b =>
